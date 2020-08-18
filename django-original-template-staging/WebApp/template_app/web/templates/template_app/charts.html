@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- <script src="https://code.highcharts.com/highcharts.src.js"></script> -->
+<script src="https://code.highcharts.com/maps/highmaps.src.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/countries/us/us-all.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+<div id="chartcontainer"></div>
+<div id="mapcontainer"></div>
+<div id="linecontainer"></div>
+<script>
+	{% block jquery %}
+
+		Highcharts.setOptions({
+		    colors: ['#1696D2', '#D2D2D2', '#FDBF11', '#000000'],
+		    chart: {
+		    	style: {
+		    		fontFamily:'Lato'
+		    	}
+		    }
+		});
+
+		// Chart Data
+		var endpoint = '/api/chart/data';
+		var dataArray;
+		var dataArray2;
+		var dataArray3;
+		$.ajax({
+			method: "GET",
+			url: endpoint,
+			success: function(data){
+				console.log(data)
+				dataArray = data.map(a => a.col1);
+				dataArray2 = data.map(a => a.col2);
+				dataArray3 = data.map(a => a.col3);
+				dataArray4 = data.map(a => a.col4);
+				Highcharts.chart('chartcontainer', {
+			      chart: {
+			          type: 'column'
+			      },
+			      title: {
+			          text: 'SNAP Benefits ($)'
+			      },
+			      xAxis: {
+			          categories: ['Elderly', 'Disabled', 'Children', 'ABAWD', 'Total']
+			      },
+			      yAxis: {
+		              min: 0,
+		              title: {
+		                 text: 'Benefits ($)'
+		              }
+		          },
+			      series: [{
+			          name: 'Average Monthly Eligible ($)',
+			          data: dataArray
+			      }, {
+			          name: 'Average Monthly Participating ($)',
+			          data: dataArray3
+			      }, {
+			          name: 'Annual Eligible ($)',
+			          data: dataArray2
+			      }, {
+			      	  name: 'Annual Participating ($)',
+			      	  data: dataArray4
+			      }]
+			  	});
+			},
+			error: function(error_data){
+				console.log("error");
+				console.log(error_data);
+			}
+		})
+
+		// Map Data
+		var mapendpoint = '/api/state/data';
+		var stateDataArray;
+		states = [ 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ];
+
+		$.ajax({
+			method: "GET",
+			url: mapendpoint,
+			success: function(data){
+				console.log(data);
+				stateDataArray = data.map(a => a.col3);
+				console.log(stateDataArray);
+				var stateObjectArray = [];
+				states.forEach(function(code, i){
+					var stateObject = new Object();
+					stateObject.value = stateDataArray[i];
+					stateObject.code = code;
+					stateObjectArray.push(stateObject)
+				});
+				console.log(stateObjectArray)
+				// Instantiate the map
+			  Highcharts.mapChart('mapcontainer', {
+
+			    chart: {
+			      map: 'countries/us/us-all',
+			      borderWidth: 1,
+			      style: {
+			      	fontFamily:'Lato'
+			      }
+			    },
+
+			    title: {
+			      text: 'Eligible Annual Benefits ($)'
+			    },
+
+			    exporting: {
+			      sourceWidth: 600,
+			      sourceHeight: 500
+			    },
+
+			    legend: {
+			      layout: 'horizontal',
+			      borderWidth: 0,
+			      backgroundColor: 'rgba(255,255,255,0.85)',
+			      floating: true,
+			      verticalAlign: 'top',
+			      y: 25
+			    },
+
+			    mapNavigation: {
+			      enabled: true
+			    },
+
+			    colorAxis: {
+			      min: 10000000,
+			      type: 'logarithmic',
+			      minColor: '#CFE8F3',
+			      maxColor: '#062635',
+			      stops: [
+			        [0, '#CFE8F3'],
+			        [0.67, '#1696D2'],
+			        [1, '#062635']
+			      ]
+			    },
+
+			    series: [{
+			      animation: {
+			        duration: 1000
+			      },
+			      data: stateObjectArray,
+			      joinBy: ['postal-code', 'code'],
+			      dataLabels: {
+			        enabled: true,
+			        color: '#FFFFFF',
+			        format: '{point.code}'
+			      },
+			      name: 'Eligible Annual Benefits',
+			      tooltip: {
+			        pointFormat: '{point.code}: ${point.value}'
+			      }
+			    }]
+			  });
+				},
+				error: function(error_data){
+					console.log("error");
+					console.log(error_data);
+				}
+			});
+
+	{% endblock %}
+</script>
+
+<!-- {% include "template_app/newmap.html" %} -->
+{% include "template_app/horizontalbar.html" %}
+{% include "template_app/verticalbar.html" %}
+{% include "template_app/hexmap.html" %}
+{% include "template_app/multiyearline.html" %}
+
+{% endblock content %}

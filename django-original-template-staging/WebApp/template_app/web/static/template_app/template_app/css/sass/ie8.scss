@@ -1,0 +1,63 @@
+@import "config";
+
+#main-content {
+  width: 960px;
+}
+
+.tpc-calculator .icon-toggle {
+  display: none;
+}
+
+.radio-blocks {
+  max-width: none;
+
+  input {
+    position: static;
+  }
+
+  label {
+    display: inline;
+    color: inherit;
+    background: transparent !important;
+    font: inherit;
+    padding: 0 !important;
+    span {
+      display: inline;
+    }
+  }
+}
+
+.radio-blocks-wrap {
+  max-width: none;
+}
+
+.radio-linear {
+  margin-top: 0;
+  border: 0;
+
+  li {
+    top: auto;
+  }
+
+  input {
+    position: static;
+  }
+
+  label {
+    display: block;
+    padding:  0;
+    font-size: 16px;
+    &:before,
+    &:after {
+      content: none;
+    }
+  }
+}
+
+.input-text-wrap label {
+  color: #008aaf;
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+  padding-top: 0;
+}

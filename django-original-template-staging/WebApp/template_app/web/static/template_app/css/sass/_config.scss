@@ -1,0 +1,31 @@
+
+@import "compass";
+
+
+$ltblue: #97d2e2;
+$blue: #52b4cf;
+$dkblue: #0f4b7d;
+$hoverblue: #008aaf;
+$red: #f0563d;
+$resultsGrey: #767676;
+$white: #FFFFFF;
+$resultsBlue: #97d2e2;
+
+
+@mixin line-height($fontsize, $leading) {
+  line-height: ($leading/$fontsize);
+}
+
+@mixin no-bullet {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@mixin clearfix {
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}

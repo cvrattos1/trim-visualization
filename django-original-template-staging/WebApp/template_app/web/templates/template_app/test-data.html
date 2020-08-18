@@ -1,0 +1,94 @@
+<!--
+  App: Test Data
+  Page: test-data.html
+-->
+
+<!-- add base template -->
+{% extends "template_app/base.html" %}
+
+{% load humanize %}
+{% block content %}
+<div id="main-content">
+
+  {% load static %}
+  <div class="container">
+    <div id="chartcontainer"></div>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script>
+      Highcharts.chart('chartcontainer', {
+          chart: {
+              type: 'column'
+          },
+          title: {
+              text: 'Historic World Population by Region'
+          },
+          xAxis: {
+              categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania']
+          },
+          series: [{
+              name: 'Year 1800',
+              data: [107, 31, 635, 203, 2]
+          }, {
+              name: 'Year 1900',
+              data: [133, 156, 947, 408, 6]
+          }, {
+              name: 'Year 2012',
+              data: [1052, 954, 4250, 740, 38]
+          }]
+      });
+    </script>
+
+    <div class="row" id="row-1">
+
+      <header>
+        <h2>Trim Data</h2>
+      </header>
+
+              <div class="body">
+                <p>
+                  The data listed below is the output from the TRIM algorithm relating to SNAP benefits.
+                </p>
+
+                <h2>Trim Data</h2>
+                <table  class="table  table-striped">
+
+                <thead>
+                  <tr>
+                    {% for field in fields %}
+                        <th scope="col">{{ field.name }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+
+                  <tbody>
+                  {% for data in some_data %}
+                    <tr>
+                      <td>{{ data.id }}</td>
+                      <td>{{ data.simulation }}</td>
+                      <td>{{ data.simulationid }} </td>
+                      <td>{{ data.tableid }} </td>
+                      <td>{{ data.type }} </td>
+                      <td>{{ data.subtype }} </td>
+                      <td>{{ data.col1 }} </td>
+                      <td>{{ data.col2 }} </td>
+                      <td>{{ data.col3 }} </td>
+                      <td>{{ data.col4 }} </td>
+                      <td>{{ data.col5 }} </td>
+                      <td>{{ data.col6 }} </td>
+                      <td>{{ data.col7 }} </td>
+                      <td>{{ data.col8 }} </td>
+                      <td>{{ data.col9 }} </td>
+                      <td>{{ data.col10 }} </td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+
+                </table>
+
+            </div>
+        </div> <!-- end body-->
+      </div><!--  end container -->
+  </div><!--  end main-content -->
+
+{% endblock %}

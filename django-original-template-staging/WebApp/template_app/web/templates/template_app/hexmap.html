@@ -1,0 +1,461 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- <script src="https://code.highcharts.com/highcharts.src.js"></script> -->
+<script src="https://code.highcharts.com/modules/heatmap.js"></script>
+<script src="https://code.highcharts.com/modules/tilemap.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+<div id="hexmapcontainer"></div>
+<script>
+	$(document).ready(function(){
+
+		// Map Data
+		var mapendpoint = '/api/multiple/data';
+		var dataArray;
+		var dataArray2;
+		var stateDataArray;
+		states = [ 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ];
+
+		$.ajax({
+			method: "GET",
+			url: mapendpoint,
+			success: function(data){
+				console.log(data);
+				dataArray = data.slice(0, 51);
+          		dataArray2 = data.slice(51);
+          		dataArray = dataArray.map(a => a.col3);
+				dataArray2 = dataArray2.map(a => a.col3);
+				stateDataArray = dataArray.map(function (num, idx) {
+					return num - dataArray2[idx];
+				});
+				console.log(stateDataArray);
+				var stateObjectArray = [];
+				states.forEach(function(code, i){
+					var stateObject = new Object();
+					stateObject.value = stateDataArray[i];
+					stateObject.code = code;
+					stateObjectArray.push(stateObject)
+				});
+				console.log(stateObjectArray)
+				console.log(typeof stateObjectArray)
+				// Instantiate the map
+			  		Highcharts.chart('hexmapcontainer', {
+					  chart: {
+					    type: 'tilemap',
+					    inverted: true,
+					    height: '80%'
+					  },
+
+					  title: {
+					    text: 'Change in Eligible Benefits Between 2016 and 2017'
+					  },
+
+					  xAxis: {
+					    visible: false
+					  },
+
+					  yAxis: {
+					    visible: false
+					  },
+
+					  colorAxis: {
+					    dataClasses: [{
+				            to: 0,
+				            color: '#FDBF11',
+				            name: 'Decrease'
+				        }, {
+				            from: 0,
+				            color: '#1696D2',
+				            name: 'Increase'
+				        }]
+					  },
+
+					  tooltip: {
+					    headerFormat: '',
+					    pointFormat: '{point.name}: ${point.value}'
+					  },
+
+					  plotOptions: {
+					    series: {
+					      dataLabels: {
+					        enabled: true,
+					        format: '{point.hc-a2}',
+					        color: '#000000',
+					        style: {
+					          textOutline: false
+					        }
+					      }
+					    }
+					  },
+
+					  series: [{
+					    name: '',
+					    data: [{
+					      'hc-a2': 'AL',
+					      name: 'Alabama',
+					      region: 'South',
+					      x: 6,
+					      y: 7,
+					      value: stateDataArray[0]
+					    }, {
+					      'hc-a2': 'AK',
+					      name: 'Alaska',
+					      region: 'West',
+					      x: 0,
+					      y: 0,
+					      value: stateDataArray[1]
+					    }, {
+					      'hc-a2': 'AZ',
+					      name: 'Arizona',
+					      region: 'West',
+					      x: 5,
+					      y: 3,
+					      value: stateDataArray[2]
+					    }, {
+					      'hc-a2': 'AR',
+					      name: 'Arkansas',
+					      region: 'South',
+					      x: 5,
+					      y: 6,
+					      value: stateDataArray[3]
+					    }, {
+					      'hc-a2': 'CA',
+					      name: 'California',
+					      region: 'West',
+					      x: 5,
+					      y: 2,
+					      value: stateDataArray[4]
+					    }, {
+					      'hc-a2': 'CO',
+					      name: 'Colorado',
+					      region: 'West',
+					      x: 4,
+					      y: 3,
+					      value: stateDataArray[5]
+					    }, {
+					      'hc-a2': 'CT',
+					      name: 'Connecticut',
+					      region: 'Northeast',
+					      x: 3,
+					      y: 11,
+					      value: stateDataArray[6]
+					    }, {
+					      'hc-a2': 'DE',
+					      name: 'Delaware',
+					      region: 'South',
+					      x: 4,
+					      y: 9,
+					      value: stateDataArray[7]
+					    }, {
+					      'hc-a2': 'DC',
+					      name: 'District of Columbia',
+					      region: 'South',
+					      x: 4,
+					      y: 10,
+					      value: stateDataArray[8]
+					    }, {
+					      'hc-a2': 'FL',
+					      name: 'Florida',
+					      region: 'South',
+					      x: 8,
+					      y: 8,
+					      value: stateDataArray[9]
+					    }, {
+					      'hc-a2': 'GA',
+					      name: 'Georgia',
+					      region: 'South',
+					      x: 7,
+					      y: 8,
+					      value: stateDataArray[10]
+					    }, {
+					      'hc-a2': 'HI',
+					      name: 'Hawaii',
+					      region: 'West',
+					      x: 8,
+					      y: 0,
+					      value: stateDataArray[11]
+					    }, {
+					      'hc-a2': 'ID',
+					      name: 'Idaho',
+					      region: 'West',
+					      x: 3,
+					      y: 2,
+					      value: stateDataArray[12]
+					    }, {
+					      'hc-a2': 'IL',
+					      name: 'Illinois',
+					      region: 'Midwest',
+					      x: 3,
+					      y: 6,
+					      value: stateDataArray[13]
+					    }, {
+					      'hc-a2': 'IN',
+					      name: 'Indiana',
+					      region: 'Midwest',
+					      x: 3,
+					      y: 7,
+					      value: stateDataArray[14]
+					    }, {
+					      'hc-a2': 'IA',
+					      name: 'Iowa',
+					      region: 'Midwest',
+					      x: 3,
+					      y: 5,
+					      value: stateDataArray[15]
+					    }, {
+					      'hc-a2': 'KS',
+					      name: 'Kansas',
+					      region: 'Midwest',
+					      x: 5,
+					      y: 5,
+					      value: stateDataArray[16]
+					    }, {
+					      'hc-a2': 'KY',
+					      name: 'Kentucky',
+					      region: 'South',
+					      x: 4,
+					      y: 6,
+					      value: stateDataArray[17]
+					    }, {
+					      'hc-a2': 'LA',
+					      name: 'Louisiana',
+					      region: 'South',
+					      x: 6,
+					      y: 5,
+					      value: stateDataArray[18]
+					    }, {
+					      'hc-a2': 'ME',
+					      name: 'Maine',
+					      region: 'Northeast',
+					      x: 0,
+					      y: 11,
+					      value: stateDataArray[19]
+					    }, {
+					      'hc-a2': 'MD',
+					      name: 'Maryland',
+					      region: 'South',
+					      x: 4,
+					      y: 8,
+					      value: stateDataArray[20]
+					    }, {
+					      'hc-a2': 'MA',
+					      name: 'Massachusetts',
+					      region: 'Northeast',
+					      x: 2,
+					      y: 10,
+					      value: stateDataArray[21]
+					    }, {
+					      'hc-a2': 'MI',
+					      name: 'Michigan',
+					      region: 'Midwest',
+					      x: 2,
+					      y: 7,
+					      value: stateDataArray[22]
+					    }, {
+					      'hc-a2': 'MN',
+					      name: 'Minnesota',
+					      region: 'Midwest',
+					      x: 2,
+					      y: 4,
+					      value: stateDataArray[23]
+					    }, {
+					      'hc-a2': 'MS',
+					      name: 'Mississippi',
+					      region: 'South',
+					      x: 6,
+					      y: 6,
+					      value: stateDataArray[24]
+					    }, {
+					      'hc-a2': 'MO',
+					      name: 'Missouri',
+					      region: 'Midwest',
+					      x: 4,
+					      y: 5,
+					      value: stateDataArray[25]
+					    }, {
+					      'hc-a2': 'MT',
+					      name: 'Montana',
+					      region: 'West',
+					      x: 2,
+					      y: 2,
+					      value: stateDataArray[26]
+					    }, {
+					      'hc-a2': 'NE',
+					      name: 'Nebraska',
+					      region: 'Midwest',
+					      x: 4,
+					      y: 4,
+					      value: stateDataArray[27]
+					    }, {
+					      'hc-a2': 'NV',
+					      name: 'Nevada',
+					      region: 'West',
+					      x: 4,
+					      y: 2,
+					      value: stateDataArray[28]
+					    }, {
+					      'hc-a2': 'NH',
+					      name: 'New Hampshire',
+					      region: 'Northeast',
+					      x: 1,
+					      y: 11,
+					      value: stateDataArray[29]
+					    }, {
+					      'hc-a2': 'NJ',
+					      name: 'New Jersey',
+					      region: 'Northeast',
+					      x: 3,
+					      y: 10,
+					      value: stateDataArray[30]
+					    }, {
+					      'hc-a2': 'NM',
+					      name: 'New Mexico',
+					      region: 'West',
+					      x: 6,
+					      y: 3,
+					      value: stateDataArray[31]
+					    }, {
+					      'hc-a2': 'NY',
+					      name: 'New York',
+					      region: 'Northeast',
+					      x: 2,
+					      y: 9,
+					      value: stateDataArray[32]
+					    }, {
+					      'hc-a2': 'NC',
+					      name: 'North Carolina',
+					      region: 'South',
+					      x: 5,
+					      y: 9,
+					      value: stateDataArray[33]
+					    }, {
+					      'hc-a2': 'ND',
+					      name: 'North Dakota',
+					      region: 'Midwest',
+					      x: 2,
+					      y: 3,
+					      value: stateDataArray[34]
+					    }, {
+					      'hc-a2': 'OH',
+					      name: 'Ohio',
+					      region: 'Midwest',
+					      x: 3,
+					      y: 8,
+					      value: stateDataArray[35]
+					    }, {
+					      'hc-a2': 'OK',
+					      name: 'Oklahoma',
+					      region: 'South',
+					      x: 6,
+					      y: 4,
+					      value: stateDataArray[36]
+					    }, {
+					      'hc-a2': 'OR',
+					      name: 'Oregon',
+					      region: 'West',
+					      x: 4,
+					      y: 1,
+					      value: stateDataArray[37]
+					    }, {
+					      'hc-a2': 'PA',
+					      name: 'Pennsylvania',
+					      region: 'Northeast',
+					      x: 3,
+					      y: 9,
+					      value: stateDataArray[38]
+					    }, {
+					      'hc-a2': 'RI',
+					      name: 'Rhode Island',
+					      region: 'Northeast',
+					      x: 2,
+					      y: 11,
+					      value: stateDataArray[39]
+					    }, {
+					      'hc-a2': 'SC',
+					      name: 'South Carolina',
+					      region: 'South',
+					      x: 6,
+					      y: 8,
+					      value: stateDataArray[40]
+					    }, {
+					      'hc-a2': 'SD',
+					      name: 'South Dakota',
+					      region: 'Midwest',
+					      x: 3,
+					      y: 4,
+					      value: stateDataArray[41]
+					    }, {
+					      'hc-a2': 'TN',
+					      name: 'Tennessee',
+					      region: 'South',
+					      x: 5,
+					      y: 7,
+					      value: stateDataArray[42]
+					    }, {
+					      'hc-a2': 'TX',
+					      name: 'Texas',
+					      region: 'South',
+					      x: 7,
+					      y: 4,
+					      value: stateDataArray[43]
+					    }, {
+					      'hc-a2': 'UT',
+					      name: 'Utah',
+					      region: 'West',
+					      x: 5,
+					      y: 4,
+					      value: stateDataArray[44]
+					    }, {
+					      'hc-a2': 'VT',
+					      name: 'Vermont',
+					      region: 'Northeast',
+					      x: 1,
+					      y: 10,
+					      value: stateDataArray[45]
+					    }, {
+					      'hc-a2': 'VA',
+					      name: 'Virginia',
+					      region: 'South',
+					      x: 5,
+					      y: 8,
+					      value: stateDataArray[46]
+					    }, {
+					      'hc-a2': 'WA',
+					      name: 'Washington',
+					      region: 'West',
+					      x: 2,
+					      y: 1,
+					      value: stateDataArray[47]
+					    }, {
+					      'hc-a2': 'WV',
+					      name: 'West Virginia',
+					      region: 'South',
+					      x: 4,
+					      y: 7,
+					      value: stateDataArray[48]
+					    }, {
+					      'hc-a2': 'WI',
+					      name: 'Wisconsin',
+					      region: 'Midwest',
+					      x: 2,
+					      y: 5,
+					      value: stateDataArray[49]
+					    }, {
+					      'hc-a2': 'WY',
+					      name: 'Wyoming',
+					      region: 'West',
+					      x: 3,
+					      y: 3,
+					      value: stateDataArray[50]
+					    }]
+					  }]
+					});
+				},
+				error: function(error_data){
+					console.log("error");
+					console.log(error_data);
+				}
+			});
+
+	})
+</script>

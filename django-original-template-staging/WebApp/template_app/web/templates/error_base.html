@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>template-app</title>
+
+  </head>
+
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'template_app/css/normalize.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'template_app/css/calculator.css' %}" />
+
+<script src="{% static 'template_app/js/vendor/modernizr-3.0.0.custom.js' %}"></script>
+
+<body>
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }} </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% block content %}{% endblock %}
+
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="{% static 'template_app/js/calculator.js' %}"></script>
+
+<!--
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')</script>
+-->
+
+  </body>
+</html>

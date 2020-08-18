@@ -1,0 +1,97 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- <script src="https://code.highcharts.com/highcharts.src.js"></script> -->
+<script src="https://code.highcharts.com/maps/highmaps.src.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/countries/us/us-all.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+<div id="horizontalbarcontainer"></div>
+<script>
+    $(document).ready(function(){
+
+      Highcharts.setOptions({
+        colors: ['#1696D2', '#D2D2D2', '#FDBF11', '#000000'],
+        chart: {
+          style: {
+            fontFamily:'Lato'
+          }
+        }
+    });
+
+      var endpoint = '/api/multiple/data';
+      var dataArray;
+      var dataArray2;
+      var states = [ 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ];
+      $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data){
+          console.log(data);
+          dataArray = data.slice(0, 51);
+          dataArray2 = data.slice(51);
+          console.log(dataArray);
+          console.log(dataArray2);
+          dataArray = dataArray.map(a => a.col3);
+          dataArray2 = dataArray2.map(a => a.col3);
+          console.log(dataArray);
+          console.log(dataArray2);
+          Highcharts.chart('horizontalbarcontainer', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Total Eligible SNAP Benefits Comparison ($)'
+            },
+            xAxis: {
+                categories: states,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '$',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valuePrefix: '$'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 80,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor:
+                    Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: '2017',
+                data: dataArray
+            }, {
+                name: '2016',
+                data: dataArray2
+            }]
+        });
+        }
+      });
+    })
+</script>

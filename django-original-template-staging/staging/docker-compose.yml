@@ -1,0 +1,43 @@
+version: '2'
+services:
+  nginx:
+    container_name: nginx_server
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/ssl/:/etc/nginx/ssl
+      - ./nginx/log/nginx:/var/log/nginx
+    volumes_from:
+      - web
+    links:
+     - web:web
+  db:
+    container_name: db_server
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    env_file: .env
+    volumes:
+      - ./WebApp/scripts/import_mysql_backup.sh:/scripts/import_mysql_backup.sh
+      - ./WebApp/scripts/tpc_tax_calculator.sql:/scripts/tpc_tax_calculator.sql
+      - ./WebApp/scripts/:/scripts
+  web:
+    container_name: web_server
+    restart: always
+    build: .
+    expose:
+      - "8000"
+    volumes:
+      - ./WebApp/template_app/static/template_app/:/static
+      - ./WebApp/scripts/init_app.sh:/scripts/init_app.sh
+      - ./WebApp/logs/:/logs
+    links:
+      - db:mysql
+    env_file: .env
+    command: /usr/src/app/uwsgi/init.sh
+    depends_on:
+      - db

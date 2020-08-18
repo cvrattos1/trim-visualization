@@ -1,0 +1,145 @@
+<!--
+  App: Test Data
+  Page: test-data.html
+-->
+
+<!-- add base template -->
+{% extends "template_app/base.html" %}
+
+{% load humanize %}
+{% block content %}
+<div id="main-content">
+
+  {% load static %}
+  <div class="container">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- <script src="https://code.highcharts.com/highcharts.src.js"></script> -->
+	<script src="https://code.highcharts.com/maps/highmaps.src.js"></script>
+	<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+	<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/mapdata/countries/us/us-all.js"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+
+    <div class="row" id="row-1">
+
+	        <div class="body">
+	        	<h2>Trim Data</h2>
+	          	<p>
+	              The data listed below is the output from the TRIM algorithm relating to SNAP benefits.
+	            </p>
+
+	            <div id="newcontainer"></div>
+				<script>
+					$(document).ready(function(){
+
+						my_data = {{dictionary|safe}};
+						console.log(my_data);
+						console.log(typeof my_data)
+
+						Highcharts.setOptions({
+						    colors: ['#000000', '#D2D2D2', '#FDBF11', '#1696D2'],
+						    chart: {
+						    	style: {
+						    		fontFamily:'Lato'
+						    	}
+						    }
+						});
+
+						// Map Data
+						var mapendpoint = '/api/state/data';
+						var stateDataArray;
+						states = [ 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY' ];
+
+						$.ajax({
+							method: "GET",
+							url: mapendpoint,
+							success: function(data){
+								console.log(data);
+								stateDataArray = data.map(a => a.col3);
+								console.log(stateDataArray);
+								var stateObjectArray = [];
+								states.forEach(function(code, i){
+									var stateObject = new Object();
+									stateObject.value = stateDataArray[i];
+									stateObject.code = code;
+									stateObjectArray.push(stateObject)
+								});
+								console.log(stateObjectArray)
+								console.log(typeof stateObjectArray)
+								// Instantiate the map
+							  Highcharts.mapChart('newcontainer', {
+
+							    chart: {
+							      map: 'countries/us/us-all',
+							      borderWidth: 1,
+							      style: {
+							      	fontFamily:'Lato'
+							      }
+							    },
+
+							    title: {
+							      text: 'Eligible Annual Benefits ($)'
+							    },
+
+							    exporting: {
+							      sourceWidth: 600,
+							      sourceHeight: 500
+							    },
+
+							    legend: {
+							      layout: 'horizontal',
+							      borderWidth: 0,
+							      backgroundColor: 'rgba(255,255,255,0.85)',
+							      floating: true,
+							      verticalAlign: 'top',
+							      y: 25
+							    },
+
+							    mapNavigation: {
+							      enabled: true
+							    },
+
+							    colorAxis: {
+							      min: 10000000,
+							      type: 'logarithmic',
+							      minColor: '#CFE8F3',
+							      maxColor: '#062635',
+							      stops: [
+							        [0, '#CFE8F3'],
+							        [0.67, '#1696D2'],
+							        [1, '#062635']
+							      ]
+							    },
+
+							    series: [{
+							      animation: {
+							        duration: 1000
+							      },
+							      data: my_data,
+							      joinBy: ['postal-code', 'code'],
+							      dataLabels: {
+							        enabled: true,
+							        color: '#FFFFFF',
+							        format: '{point.code}'
+							      },
+							      name: 'Eligible Annual Benefits',
+							      tooltip: {
+							        pointFormat: '{point.code}: ${point.value}'
+							      }
+							    }]
+							  });
+								},
+								error: function(error_data){
+									console.log("error");
+									console.log(error_data);
+								}
+							});
+
+					})
+				</script>
+            </div>
+        </div> <!-- end body-->
+      </div><!--  end container -->
+  </div><!--  end main-content -->
+
+{% endblock %}

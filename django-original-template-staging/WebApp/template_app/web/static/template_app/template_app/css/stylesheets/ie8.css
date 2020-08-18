@@ -1,0 +1,68 @@
+/* line 3, ../sass/ie8.scss */
+#main-content {
+  width: 960px;
+}
+
+/* line 7, ../sass/ie8.scss */
+.tpc-calculator .icon-toggle {
+  display: none;
+}
+
+/* line 11, ../sass/ie8.scss */
+.radio-blocks {
+  max-width: none;
+}
+/* line 14, ../sass/ie8.scss */
+.radio-blocks input {
+  position: static;
+}
+/* line 18, ../sass/ie8.scss */
+.radio-blocks label {
+  display: inline;
+  color: inherit;
+  background: transparent !important;
+  font: inherit;
+  padding: 0 !important;
+}
+/* line 24, ../sass/ie8.scss */
+.radio-blocks label span {
+  display: inline;
+}
+
+/* line 30, ../sass/ie8.scss */
+.radio-blocks-wrap {
+  max-width: none;
+}
+
+/* line 34, ../sass/ie8.scss */
+.radio-linear {
+  margin-top: 0;
+  border: 0;
+}
+/* line 38, ../sass/ie8.scss */
+.radio-linear li {
+  top: auto;
+}
+/* line 42, ../sass/ie8.scss */
+.radio-linear input {
+  position: static;
+}
+/* line 46, ../sass/ie8.scss */
+.radio-linear label {
+  display: block;
+  padding: 0;
+  font-size: 16px;
+}
+/* line 50, ../sass/ie8.scss */
+.radio-linear label:before, .radio-linear label:after {
+  content: none;
+}
+
+/* line 57, ../sass/ie8.scss */
+.input-text-wrap label {
+  color: #008aaf;
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+  padding-top: 0;
+}
